@@ -6,13 +6,13 @@ A calm, focused study space for MSc exam preparation – lecture notes, flashcar
 **Coming soon:** IT5080 DevOps · IT5070 Internet of Things · IE6053 Enterprise Governance of IT · IT5120 Data Analytics · IT5130 Cloud Computing.
 
 ## Features
-- Landing page with a card per module – click one to “zoom in” to its own space with a sidebar.
+- Landing page: a shelf of six spellbooks (one per module). Click a book to step inside its own space with a sidebar.
 - Lecture notes, key terms and the original slides (PDF viewer) for every lecture.
 - Instant-feedback MCQ practice by topic, and a timed mock exam (2026 model paper or a random mix).
 - Written practice with model answers for the 2022, 2023, 2024 papers and the 2026 model paper.
 - Flashcards, a one-page cheat sheet (printable) and saved progress (stored in the browser only).
 - Paper generator: build a practice paper (MCQ + written), submit it and see the answers.
-- Magical welcome sequence on first open (Lumos reveal, wand sparks, then the portal appears piece by piece). Skippable; replay from the bottom of the landing page.
+- Magical welcome sequence on first open: a wand-light reveal with swirling sparks (no text or buttons; Esc skips), then six spellbooks fly in from different sides, gather in the middle and open to show each module. Replay from the footer.
 - Light / dark mode, works on phones.
 
 ## Run locally
