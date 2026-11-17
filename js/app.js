@@ -88,54 +88,65 @@
   }
   window.addEventListener("hashchange", render);
 
-  /* ---------------- landing page (Marauder's Map) ---------------- */
+  /* ---------------- landing page: a shelf of six spellbooks ---------------- */
+  var TONES = [["#8a2232", "#4e1019"], ["#1f5a40", "#0f2e21"], ["#27457a", "#14264a"], ["#9a7414", "#5a4208"], ["#6a3a74", "#35183d"], ["#3d6670", "#1b343b"]];
+  var ORN = '<svg class="cf-orn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/><circle cx="12" cy="11" r="1.6"/></svg>';
+  var flown = false;
+
+  function bookHTML(m, idx) {
+    var t = TONES[idx % TONES.length], d = daysLeft(m.date);
+    var right = '<span class="b-label">Final examination</span><span class="b-date">' + esc(m.dateLabel) + '</span>' +
+      (d >= 0 ? '<span class="b-count">' + esc(countdown(m)) + "</span>" : "") +
+      '<span class="b-line">' + esc(m.time) + " · " + esc(m.duration) + '</span><span class="b-line sub">' + esc(m.type) + '</span><span class="b-line sub">' + esc(m.lic) + "</span>" +
+      (m.ready ? '<span class="b-cta"><span>Open this book</span><span>&rarr;</span></span>' : '<span class="b-tag">Coming soon</span>');
+    return '<a class="book' + (m.ready ? "" : " soon") + '" href="#/m/' + m.code + '" data-code="' + m.code + '" style="--c1:' + t[0] + ";--c2:" + t[1] + '" aria-label="' + esc(m.name) + (m.ready ? "" : " (coming soon)") + '">' +
+      '<div class="book-body"><div class="base-r"></div><div class="rpage"><div class="rp-in">' + right + '<span class="ribbon"></span></div></div>' +
+      '<div class="cover"><div class="cover-front"><div class="cf-frame">' + ORN + '<span class="cf-code">' + m.code + '</span><span class="cf-title">' + esc(m.name) + '</span><span class="cf-rule"></span><span class="cf-place">' + esc(m.place) + "</span></div></div>" +
+      '<div class="cover-back"><div class="lp-in"><span class="b-place">' + esc(m.place) + '</span><span class="b-code">' + m.code + '</span><h3 class="b-title">' + esc(m.name) + '</h3><p class="b-desc">' + (m.ready ? esc(m.desc) : "The ink has not appeared on these pages yet.") + "</p></div></div></div></div></a>";
+  }
+
   function home() {
     $("#menuBtn").style.display = "none"; $("#crumb").textContent = "";
     document.title = "Prashanthi’s MSc Study Portal";
     var upcoming = D.modules.filter(function (m) { return daysLeft(m.date) >= 0; }).sort(function (a, b) { return a.date < b.date ? -1 : 1; })[0];
-    var h = '<div class="view-in"><section class="mapsheet">' +
-      '<svg class="flourish" viewBox="0 0 520 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 20h170c20 0 22-14 40-14s20 14 40 14 22-14 40-14 20 14 40 14h170"/><circle cx="260" cy="20" r="5" fill="currentColor"/><path d="M180 20c-10 10-30 14-50 8M340 20c10 10 30 14 50 8"/></svg>' +
-      '<p class="presents">Miss <b>Prashanthi</b> and her trusty books</p><p class="presents">are proud to present</p>' +
-      '<h1 class="crest">Prashanthi’s <br>MSc Study Portal<small>a map of every module you must conquer</small></h1>' +
-      '<p class="oath">“I solemnly swear that I am up to some very good studying.”</p>';
+    var h = '<div class="landing"><section class="hero"><span class="eyebrow">MSc · July 2026 intake</span><h1>Prashanthi’s <span>MSc Study Portal</span></h1><p class="hero-sub">Final examinations · November – December 2026</p>';
     if (upcoming) {
       var dl = daysLeft(upcoming.date);
-      h += '<div class="next-exam"><b>' + dl + '</b><div class="muted">' + (dl === 1 ? "day until" : "days until") + ' your next exam<br><strong style="color:var(--ink)">' + esc(upcoming.name) + "</strong> · " + esc(upcoming.dateLabel) + "</div></div>";
-    }
-    h += '<div class="map" id="map"><svg class="trail" id="trail" aria-hidden="true"></svg>';
-    D.modules.forEach(function (m, idx) {
-      var d = daysLeft(m.date);
-      h += '<a class="module-card' + (m.ready ? "" : " soon") + '" style="--i:' + idx + '" href="#/m/' + m.code + '" data-code="' + m.code + '">' +
-        '<span class="seal" aria-hidden="true">' + (m.ready ? "P" : "?") + '</span><span class="place">' + esc(m.place) + '</span><span class="code">' + m.code + "</span><h3>" + esc(m.name) + "</h3>" +
-        "<p>" + (m.ready ? esc(m.desc) : "The ink hasn’t appeared on this part of the map yet.") + "</p>" +
-        '<div class="meta"><span class="tag' + (m.ready ? " ok" : " gray") + '">' + (m.ready ? "Open for study" : "Coming soon") + '</span><span class="muted">' + esc(m.dateLabel) + (d >= 0 ? " · " + countdown(m) : "") + "</span></div>" +
-        '<span class="open">' + (m.ready ? "Step inside" : "Peek inside") + " &rarr;</span></a>";
-    });
-    h += '</div><p class="mischief">Mischief managed.</p><p><button type="button" class="linklike" id="replayIntro">Replay the welcome</button></p></section></div>';
+      h += '<div class="next-exam"><b>' + dl + '</b><div class="muted">' + (dl === 1 ? "day until" : "days until") + ' your next exam<br><strong>' + esc(upcoming.name) + "</strong> · " + esc(upcoming.dateLabel) + "</div></div>";
+    } else { h += "<span></span>"; }
+    h += '</section><section class="shelf" id="shelf" aria-label="Study modules">' + D.modules.map(bookHTML).join("") + "</section></div>";
     app.innerHTML = h;
-    $("#replayIntro").addEventListener("click", function () { if (window.PSPIntro) { app.innerHTML = ""; window.PSPIntro.run(render); } });
-    drawTrail();
-    window.addEventListener("resize", drawTrail);
-    cleanup.push(function () { window.removeEventListener("resize", drawTrail); });
-    setTimeout(drawTrail, 700);
-  }
-  function drawTrail() {
-    var map = $("#map"), svg = $("#trail"); if (!map || !svg) return;
-    var cards = $$(".module-card", map), mr = map.getBoundingClientRect();
-    if (cards.length < 2) return;
-    var pts = cards.map(function (c) { var r = c.getBoundingClientRect(); return [r.left - mr.left + r.width / 2, r.top - mr.top + r.height / 2]; });
-    var d = "M" + pts[0][0] + " " + pts[0][1];
-    for (var i = 1; i < pts.length; i++) {
-      var a = pts[i - 1], b = pts[i], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[1] - a[1], dy = a[0] - b[0], k = i % 2 ? 0.18 : -0.18;
-      d += " Q" + (mx + dx * k) + " " + (my + dy * k) + " " + b[0] + " " + b[1];
-    }
-    svg.setAttribute("viewBox", "0 0 " + mr.width + " " + mr.height);
-    svg.innerHTML = '<path d="' + d + '"/>';
+    flyBooks();
   }
 
-  /* zoom into a module card */
+  /* the six books fly in from different sides, gather in the middle, then spread out and open */
+  function flyBooks() {
+    var books = $$("#shelf .book");
+    var still = flown || !books.length || !books[0].animate || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    flown = true;
+    if (still) { books.forEach(function (b) { b.classList.add("open"); }); return; }
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var DIRS = [[-1, -0.35], [1, -0.5], [0, -1], [-1, 0.55], [1, 0.7], [0, 1]];
+    var SPIN = [-200, 160, -140, 220, -180, 120];
+    books.forEach(function (b, i) {
+      var r = b.getBoundingClientRect(), bx = r.left + r.width / 2, by = r.top + r.height / 2;
+      var sx = vw / 2 + DIRS[i][0] * (vw / 2 + r.width) - bx, sy = vh / 2 + DIRS[i][1] * (vh / 2 + r.height) - by;
+      var cx = vw / 2 + (i - 2.5) * Math.min(30, vw / 28) - bx, cy = vh * 0.6 + (i % 2 ? 16 : -16) - by, fan = (i - 2.5) * 7;
+      var anim = b.animate([
+        { transform: "translate(" + sx + "px," + sy + "px) rotate(" + SPIN[i] + "deg) scale(.5)", opacity: 0, offset: 0, easing: "cubic-bezier(.2,.75,.25,1)" },
+        { opacity: 1, offset: .12 },
+        { transform: "translate(" + cx + "px," + cy + "px) rotate(" + fan + "deg) scale(.8)", opacity: 1, offset: .46 },
+        { transform: "translate(" + cx + "px," + cy + "px) rotate(" + fan + "deg) scale(.8)", opacity: 1, offset: .56, easing: "cubic-bezier(.55,0,.2,1)" },
+        { transform: "translate(0,0) rotate(0deg) scale(1)", opacity: 1, offset: 1 }
+      ], { duration: 2900, delay: 300 + i * 170, fill: "both" });
+      b.style.zIndex = String(10 - i);
+      anim.onfinish = function () { b.classList.add("open"); anim.cancel(); b.style.zIndex = ""; };
+    });
+  }
+
+  /* zoom into a module book */
   document.addEventListener("click", function (e) {
-    var card = e.target.closest && e.target.closest(".module-card");
+    var card = e.target.closest && e.target.closest(".book");
     if (!card) return;
     e.preventDefault();
     var href = card.getAttribute("href");
@@ -151,6 +162,10 @@
     o.classList.add("go");
     setTimeout(function () { zoomed = true; location.hash = href; setTimeout(function () { o.style.opacity = "0"; setTimeout(function () { o.remove(); }, 450); }, 80); }, 600);
   });
+
+  /* footer: module links and replay */
+  $("#fLinks").insertAdjacentHTML("beforeend", D.modules.map(function (m) { return '<a href="#/m/' + m.code + '">' + esc(m.name) + (m.ready ? "" : "<small>soon</small>") + "</a>"; }).join(""));
+  $("#replayIntro").addEventListener("click", function () { if (!window.PSPIntro) return; app.innerHTML = ""; window.PSPIntro.run(function () { flown = false; render(); }); });
 
   /* ---------------- module shell ---------------- */
   function navHTML(m, page) {
