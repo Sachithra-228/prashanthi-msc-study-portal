@@ -103,16 +103,17 @@
       h += '<div class="next-exam"><b>' + dl + '</b><div class="muted">' + (dl === 1 ? "day until" : "days until") + ' your next exam<br><strong style="color:var(--ink)">' + esc(upcoming.name) + "</strong> · " + esc(upcoming.dateLabel) + "</div></div>";
     }
     h += '<div class="map" id="map"><svg class="trail" id="trail" aria-hidden="true"></svg>';
-    D.modules.forEach(function (m) {
+    D.modules.forEach(function (m, idx) {
       var d = daysLeft(m.date);
-      h += '<a class="module-card' + (m.ready ? "" : " soon") + '" href="#/m/' + m.code + '" data-code="' + m.code + '">' +
+      h += '<a class="module-card' + (m.ready ? "" : " soon") + '" style="--i:' + idx + '" href="#/m/' + m.code + '" data-code="' + m.code + '">' +
         '<span class="seal" aria-hidden="true">' + (m.ready ? "P" : "?") + '</span><span class="place">' + esc(m.place) + '</span><span class="code">' + m.code + "</span><h3>" + esc(m.name) + "</h3>" +
         "<p>" + (m.ready ? esc(m.desc) : "The ink hasn’t appeared on this part of the map yet.") + "</p>" +
         '<div class="meta"><span class="tag' + (m.ready ? " ok" : " gray") + '">' + (m.ready ? "Open for study" : "Coming soon") + '</span><span class="muted">' + esc(m.dateLabel) + (d >= 0 ? " · " + countdown(m) : "") + "</span></div>" +
         '<span class="open">' + (m.ready ? "Step inside" : "Peek inside") + " &rarr;</span></a>";
     });
-    h += '</div><p class="mischief">Mischief managed.</p></section></div>';
+    h += '</div><p class="mischief">Mischief managed.</p><p><button type="button" class="linklike" id="replayIntro">Replay the welcome</button></p></section></div>';
     app.innerHTML = h;
+    $("#replayIntro").addEventListener("click", function () { if (window.PSPIntro) { app.innerHTML = ""; window.PSPIntro.run(render); } });
     drawTrail();
     window.addEventListener("resize", drawTrail);
     cleanup.push(function () { window.removeEventListener("resize", drawTrail); });
@@ -579,5 +580,5 @@
       '<div class="cheats">' + D.cheatsheet.map(function (s) { return '<div class="cheat"><h3>' + s.title + "</h3>" + s.html + "</div>"; }).join("") + "</div>";
   }
 
-  render();
+  if (window.PSPIntro && window.PSPIntro.shouldRun()) { window.PSPIntro.run(render); } else { render(); }
 })();
