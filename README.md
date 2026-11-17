@@ -11,6 +11,7 @@ A calm, focused study space for MSc exam preparation – lecture notes, flashcar
 - Instant-feedback MCQ practice by topic, and a timed mock exam (2026 model paper or a random mix).
 - Written practice with model answers for the 2022, 2023, 2024 papers and the 2026 model paper.
 - Flashcards, a one-page cheat sheet (printable) and saved progress (stored in the browser only).
+- Paper generator: build a practice paper (MCQ + written), submit it and see the answers.
 - Light / dark mode, works on phones.
 
 ## Run locally

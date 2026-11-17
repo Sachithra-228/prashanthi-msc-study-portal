@@ -4,26 +4,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prashanthi’s MSc Study Portal</title>
-  <meta name="description" content="A magical study space for Prashanthi’s MSc modules – lecture notes, flashcards, practice quizzes, past papers and mock exams.">
+  <meta name="description" content="A focused study space for Prashanthi’s MSc modules: lecture notes, flashcards, practice quizzes, past papers, a practice-paper generator and mock exams.">
   <meta name="theme-color" content="#7a1f2b">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236b1523' stroke='%23d3a625' stroke-width='4'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='34' text-anchor='middle' fill='%23f7e4ae'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Inter:wght@400;450;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="topbar" id="topbar">
     <div class="topbar-in">
-      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" hidden>☰</button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
       <a class="brand" href="#/" aria-label="Prashanthi’s MSc Study Portal – home">
         <span class="logo" aria-hidden="true">P</span>
         <span class="brand-text">Prashanthi’s <em>MSc Study Portal</em></span>
       </a>
       <div class="top-actions">
         <span class="crumb" id="crumb"></span>
-        <button class="icon-btn" id="themeBtn" aria-label="Toggle parchment / night mode" title="Parchment / night">☾</button>
+        <button class="icon-btn" id="themeBtn" aria-label="Switch between light and dark mode" title="Light / dark">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 010 16z" fill="currentColor"/></svg>
+        </button>
       </div>
     </div>
     <div class="scarf" aria-hidden="true"></div>
@@ -31,14 +35,14 @@
 
   <div id="app"><main id="main"></main></div>
 
-  <footer class="footer">
+  <footer class="footer" id="footer">
     <svg class="castle" viewBox="0 0 900 130" fill="currentColor" aria-hidden="true" preserveAspectRatio="xMidYMax meet">
       <path d="M0 130V108h60V92h14V70l10-26 10 26v22h16V84h28V58l9-34 9 34v26h22V96h26V70l12-40 12 40v26h20V88h40V62l10-30 10 30v26h24V76h18V44l12-34 12 34v32h18v14h38V50l11-44 11 44v40h16V70h22V54l8-26 8 26v16h18v22h40V82h26V62l9-28 9 28v20h24V94h40V66l12-36 12 36v28h18V84h30V60l10-24 10 24v24h24v14h50V80h26V56l9-26 9 26v24h22v28h36v22z"/>
     </svg>
     <div class="scarf" aria-hidden="true"></div>
     <p class="mischief-f">Mischief managed.</p>
-    <p class="wish" id="wish">You’ve worked so hard for this. Take a deep breath, trust yourself – you’ve got this. 🌸</p>
-    <p class="wish-sub">Good luck, Prashanthi – brightest witch of her year, we’re cheering for you every step of the way. 🪄💛</p>
+    <p class="wish" id="wish">You’ve worked so hard for this. Take a deep breath, trust yourself – the magic was always in you.</p>
+    <p class="wish-sub">Good luck, Prashanthi – brightest witch of her year. We’re cheering for you every step of the way.</p>
   </footer>
 
   <script src="data/modules.js"></script>
