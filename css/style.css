@@ -434,3 +434,10 @@ body.is-home { overflow-x: clip; }
 .landing { overflow: visible; }
 body.is-home .topbar { background: rgba(8, 12, 20, .86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
 @media (max-width: 760px) { .b-date { font-size: 5.9cqw; white-space: nowrap; } .b-label { font-size: 1.75cqw; } }
+
+/* code in notes and model answers */
+code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .9em; background: var(--bg2); padding: 1px 6px; border-radius: 4px; }
+pre { font: 13.5px/1.55 ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--bg2); border: 1px solid var(--line); padding: 12px 14px; border-radius: 8px; overflow-x: auto; margin: 8px 0 12px; white-space: pre; tab-size: 2; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.model pre { background: color-mix(in srgb, var(--ok) 6%, var(--surface)); }
+.prose li:has(> pre:first-child), .prose li:has(> table:first-child) { list-style: none; margin-left: -2px; }

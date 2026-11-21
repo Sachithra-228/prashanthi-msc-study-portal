@@ -2,8 +2,8 @@
 
 A calm, focused study space for MSc exam preparation – lecture notes, flashcards, practice quizzes, past papers and timed mock exams, one module at a time.
 
-**Live module:** IT5090 Research Methodology (10 lectures, 115 MCQs, 36 written questions with model answers).
-**Coming soon:** IT5080 DevOps · IT5070 Internet of Things · IE6053 Enterprise Governance of IT · IT5120 Data Analytics · IT5130 Cloud Computing.
+**Live modules:** IT5090 Research Methodology (10 lectures, 113 MCQs, 36 written questions) and IT5080 DevOps (8 lectures, 86 MCQs, 49 written questions from the 2023–2025 papers).
+**Coming soon:** IT5070 Internet of Things · IE6053 Enterprise Governance of IT · IT5120 Data Analytics · IT5130 Cloud Computing.
 
 ## Features
 - Landing page: a shelf of six spellbooks (one per module). Click a book to step inside its own space with a sidebar.
@@ -28,5 +28,8 @@ Then open http://localhost:5173.
 Import this folder as a project – framework preset **Other**, no build command, output directory = the repo root.
 
 ## Adding a module
-1. Set `ready: true` for it in `data/modules.js`.
-2. Add its lectures, questions and papers to the files in `data/` (follow the IT5090 structure) and drop the PDFs into `pdfs/`.
+Each module has its own folders:
+- `data/<code>/lectures.js, mcq.js, written.js, extras.js` – content registered with `DATA.mod("<CODE>")`. `extras.js` holds the past papers list, exam guide, cheat sheet and short lecture names.
+- `pdfs/<code>/lectures` and `pdfs/<code>/papers` – the slides and past-paper PDFs.
+1. Set `ready: true` for the module in `data/modules.js`.
+2. Copy the IT5080 files as a starting point and add `<script>` tags for the new files in `index.html`.
