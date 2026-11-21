@@ -1,7 +1,7 @@
 window.DATA = window.DATA || {};
-DATA.lectures = [
+DATA.mod("IT5090").lectures = [
 {
-  id: 1, pdf: "pdfs/lectures/lecture-01.pdf", pages: 99,
+  id: 1, pdf: "pdfs/it5090/lectures/lecture-01.pdf", pages: 99,
   title: "Introduction to Research",
   desc: "What research is, the research process from problem to solution, literature reviews, aims, objectives, hypotheses and how to write a proposal.",
   sections: [
@@ -63,7 +63,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 2, pdf: "pdfs/lectures/lecture-02.pdf", pages: 89,
+  id: 2, pdf: "pdfs/it5090/lectures/lecture-02.pdf", pages: 89,
   title: "Research Philosophy & the Research Onion",
   desc: "Ontology, epistemology and axiology; positivism vs interpretivism; the research onion – approaches, designs, strategies, variables, experiments, surveys, validity and reliability.",
   sections: [
@@ -149,7 +149,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 3, pdf: "pdfs/lectures/lecture-03.pdf", pages: 32,
+  id: 3, pdf: "pdfs/it5090/lectures/lecture-03.pdf", pages: 32,
   title: "Research Ethics",
   desc: "Why ethics matter, Nuremberg and Helsinki, informed consent, plagiarism, misconduct, conflicts of interest, data management and predatory publishing.",
   sections: [
@@ -200,7 +200,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 4, pdf: "pdfs/lectures/lecture-04.pdf", pages: 35,
+  id: 4, pdf: "pdfs/it5090/lectures/lecture-04.pdf", pages: 35,
   title: "Sampling Size & Sampling Methods",
   desc: "Demographic segmentation, how to calculate sample size, qualitative sample size, and probability vs non-probability sampling methods.",
   sections: [
@@ -252,7 +252,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 5, pdf: "pdfs/lectures/lecture-05.pdf", pages: 41,
+  id: 5, pdf: "pdfs/it5090/lectures/lecture-05.pdf", pages: 41,
   title: "Addressing Missing Data Issues",
   desc: "Why data goes missing, its problems, the three missing-data mechanisms (MCAR, MAR, MNAR) and the methods to prevent or handle it.",
   sections: [
@@ -293,7 +293,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 6, pdf: "pdfs/lectures/lecture-06.pdf", pages: 60,
+  id: 6, pdf: "pdfs/it5090/lectures/lecture-06.pdf", pages: 60,
   title: "Exploratory Data Analysis & Visualization",
   desc: "Summary statistics, histograms, boxplots, scatterplots, jittering, z-scores and multivariate visualisation – how to ‘get to know your data’.",
   sections: [
@@ -335,7 +335,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 7, pdf: "pdfs/lectures/lecture-07.pdf", pages: 44,
+  id: 7, pdf: "pdfs/it5090/lectures/lecture-07.pdf", pages: 44,
   title: "Quantitative Research",
   desc: "Characteristics, levels of measurement, data preparation (validation, editing, coding), outliers, descriptive and inferential statistics, correlation and multivariate analysis.",
   sections: [
@@ -389,7 +389,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 8, pdf: "pdfs/lectures/lecture-08.pdf", pages: 71,
+  id: 8, pdf: "pdfs/it5090/lectures/lecture-08.pdf", pages: 71,
   title: "Introduction to Qualitative Research Methods",
   desc: "Qualitative characteristics and designs, data collection methods, coding types, thematic and narrative analysis, and mixed-method designs.",
   sections: [
@@ -438,7 +438,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 9, pdf: "pdfs/lectures/lecture-09.pdf", pages: 42,
+  id: 9, pdf: "pdfs/it5090/lectures/lecture-09.pdf", pages: 42,
   title: "How to Write Your Thesis",
   desc: "Thesis vs dissertation, preliminary pages, chapter-by-chapter structure and referencing.",
   sections: [
@@ -475,7 +475,7 @@ DATA.lectures = [
   ]
 },
 {
-  id: 10, pdf: "pdfs/lectures/lecture-10.pdf", pages: 43,
+  id: 10, pdf: "pdfs/it5090/lectures/lecture-10.pdf", pages: 43,
   title: "How to Write & Publish a Research Paper",
   desc: "Types of publications, the structure of a paper, writing the abstract and introduction, giving credit, reviews and presentation tips.",
   sections: [

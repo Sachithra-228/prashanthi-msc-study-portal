@@ -111,7 +111,7 @@ window.DATA = window.DATA || {};
   q(10, "In a paper, ‘Related work’ should come…", ["Before the title", "After the reader understands your idea", "Never", "Instead of the introduction"], 1, "Otherwise it gets between the reader and your idea.");
   q(10, "How should you treat reviewers’ criticism?", ["Ignore it", "Like gold dust – respond to each point and thank them", "Argue back", "Withdraw the paper"], 1, "Criticism shows what to explain more clearly.");
 
-  DATA.mcq = bank;
+  DATA.mod("IT5090").mcq = bank;
 
   /* ---------- Model Exam Paper 2026 (exact MCQ part) ---------- */
   var m = [];
@@ -141,5 +141,5 @@ window.DATA = window.DATA || {};
   mq("What is a conflict of interest in research?", ["Publishing in a predatory journal", "Personal interests interfering with official duties", "Not getting consent from research participants", "Disagreement with co-authors"], 1, "Personal interests clash with professional duties.");
   mq("What is the ethical issue with redundant publications?", ["It is a form of data Falsification", "It is a form of data Fabrication", "It is a form of self-plagiarism", "It is a form of predatory publishing"], 2, "Redundant publication = self-plagiarism.");
   mq("What is the purpose of ethics clearance forms?", ["To use someone’s idea without acknowledgment", "To qualify research to be published in journals by completing ethics requirements", "To understand ethics procedures needed for research", "To ensure ethical compliance in research"], 3, "Ethics clearance ensures ethical compliance (best answer from the lecture).");
-  DATA.modelMcq = m;
+  DATA.mod("IT5090").modelMcq = m;
 })();
