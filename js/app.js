@@ -109,6 +109,9 @@
   var ORN = '<svg class="cf-orn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/><circle cx="12" cy="11" r="1.6"/></svg>';
   var flown = false;
 
+  /* a book opens by itself only while its exam is still ahead; finished or not-yet-ready books stay closed until clicked */
+  function startsOpen(m) { return !!m.ready && daysLeft(m.date) >= 0; }
+  function statusLabel(m) { return !m.ready ? "Coming soon" : daysLeft(m.date) < 0 ? "Exam completed" : ""; }
   function bookHTML(m, idx) {
     var t = TONES[idx % TONES.length], d = daysLeft(m.date);
     var right = '<span class="b-label">Final examination</span><span class="b-date">' + esc(m.dateLabel) + '</span>' +
@@ -117,7 +120,7 @@
       (m.ready ? '<span class="b-cta"><span>Open this book</span><span>&rarr;</span></span>' : '<span class="b-tag">Coming soon</span>');
     return '<a class="book' + (m.ready ? "" : " soon") + '" href="#/m/' + m.code + '" data-code="' + m.code + '" style="--c1:' + t[0] + ";--c2:" + t[1] + '" aria-label="' + esc(m.name) + (m.ready ? "" : " (coming soon)") + '">' +
       '<div class="book-body"><div class="base-r"></div><div class="rpage"><div class="rp-in">' + right + '<span class="ribbon"></span></div></div>' +
-      '<div class="cover"><div class="cover-front"><div class="cf-frame">' + ORN + '<span class="cf-code">' + m.code + '</span><span class="cf-title">' + esc(m.name) + '</span><span class="cf-rule"></span><span class="cf-place">' + esc(m.place) + "</span></div></div>" +
+      '<div class="cover"><div class="cover-front"><div class="cf-frame">' + ORN + '<span class="cf-code">' + m.code + '</span><span class="cf-title">' + esc(m.name) + '</span><span class="cf-rule"></span><span class="cf-place">' + esc(m.place) + "</span>" + (statusLabel(m) ? '<span class="cf-status">' + statusLabel(m) + "</span>" : "") + "</div></div>" +
       '<div class="cover-back"><div class="lp-in"><span class="b-place">' + esc(m.place) + '</span><span class="b-code">' + m.code + '</span><h3 class="b-title">' + esc(m.name) + '</h3><p class="b-desc">' + (m.ready ? esc(m.desc) : "The ink has not appeared on these pages yet.") + "</p></div></div></div></div></a>";
   }
 
@@ -140,7 +143,8 @@
     var books = $$("#shelf .book");
     var still = flown || !books.length || !books[0].animate || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     flown = true;
-    if (still) { books.forEach(function (b) { b.classList.add("open"); }); return; }
+    var openIt = function (b) { if (startsOpen(mod(b.getAttribute("data-code")))) b.classList.add("open"); };
+    if (still) { books.forEach(openIt); return; }
     var vw = window.innerWidth, vh = window.innerHeight;
     var DIRS = [[-1, -0.35], [1, -0.5], [0, -1], [-1, 0.55], [1, 0.7], [0, 1]];
     var SPIN = [-200, 160, -140, 220, -180, 120];
@@ -156,7 +160,7 @@
         { transform: "translate(0,0) rotate(0deg) scale(1)", opacity: 1, offset: 1 }
       ], { duration: 2900, delay: 300 + i * 170, fill: "both" });
       b.style.zIndex = String(10 - i);
-      anim.onfinish = function () { b.classList.add("open"); anim.cancel(); b.style.zIndex = ""; };
+      anim.onfinish = function () { openIt(b); anim.cancel(); b.style.zIndex = ""; };
     });
   }
 
@@ -165,6 +169,7 @@
     var card = e.target.closest && e.target.closest(".book");
     if (!card) return;
     e.preventDefault();
+    if (!card.classList.contains("open")) { card.classList.add("open"); return; }  /* closed book: first click opens it, second enters */
     var href = card.getAttribute("href");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { location.hash = href; return; }
     var r = card.getBoundingClientRect(), m = mod(card.getAttribute("data-code"));
@@ -188,12 +193,13 @@
     var base = "#/m/" + m.code;
     function a(path, icon, label, alt) { var on = page === path || (alt && alt.indexOf(page) >= 0); return '<a href="' + base + (path ? "/" + path : "") + '"' + (on ? ' class="active" aria-current="page"' : "") + ">" + ic(icon) + "<span>" + label + "</span></a>"; }
     return '<nav class="nav" aria-label="Module sections">' + a("", "home", "Overview") +
-      '<div class="nav-label">Study</div>' + a("lectures", "book", "Lectures", ["lecture"]) + a("flash", "cards", "Flashcards") + a("cheat", "grid", "Cheat sheet") +
-      '<div class="nav-label">Practice</div>' + a("practice", "check", "Practice quiz") + a("written", "pen", "Written practice") + a("generate", "spark", "Paper generator") + a("mock", "clock", "Mock exam") +
+      '<div class="nav-label">Study</div>' + a("lectures", "book", "Lectures", ["lecture"]) + a("flash", "cards", "Flashcards") + a("cheat", "grid", C.refLabel || "Cheat sheet") +
+      '<div class="nav-label">Practice</div>' + (D.mcq.length ? a("practice", "check", "Practice quiz") : "") + a("written", "pen", "Written practice") + a("generate", "spark", "Paper generator") + (D.mcq.length ? a("mock", "clock", "Mock exam") : "") +
       '<div class="nav-label">Exams</div>' + a("papers", "file", "Past papers") + "</nav>";
   }
   function moduleView(m, page, arg, arg2) {
     $("#menuBtn").style.display = ""; $("#crumb").textContent = m.code + " · " + m.name;
+    if (m.ready) activate(m.code);
     document.title = m.name + " – Prashanthi’s MSc Study Portal";
     app.innerHTML = '<div class="module-shell ' + (zoomed ? "view-zoom" : "view-in") + '">' +
       '<aside class="sidebar" id="sidebar"><div class="side-top"><a class="back" href="#/">' + ic("back") + " All modules</a>" +
@@ -203,8 +209,8 @@
     $("#scrim").addEventListener("click", function () { document.body.classList.remove("menu-open"); });
     var c = $("#content");
     if (!m.ready && page) { soon(c, m); return; }
-    activate(m.code);
     var pages = { "": overview, lectures: lecturesPage, lecture: lecturePage, papers: papersPage, practice: practicePage, written: writtenPage, generate: generatePage, mock: mockPage, flash: flashPage, cheat: cheatPage };
+    if (!D.mcq.length && (page === "practice" || page === "mock")) page = "";
     (pages[page] || overview)(c, m, arg, arg2);
   }
   $("#menuBtn").addEventListener("click", function () { document.body.classList.toggle("menu-open"); });
@@ -229,12 +235,12 @@
     function row(path, t, d, end) { return '<a class="row two" href="#/m/' + m.code + "/" + path + '"><div><div class="t">' + t + '</div><div class="d">' + d + '</div></div><div class="end">' + end + "</div></a>"; }
     c.innerHTML = head(esc(m.name), esc(m.desc), '<span class="tag ok">' + esc(countdown(m)) + "</span>", "MSc · July 2026 intake") + facts(m) +
       '<div class="section"><h2>Your progress</h2><div class="stats">' +
-      stat(lecDone, D.lectures.length, "Lectures read", pct(lecDone, D.lectures.length)) + stat(okQ, allQ, "Questions answered correctly", pct(okQ, allQ)) + stat(wDone, D.written.length, "Written answers mastered", pct(wDone, D.written.length)) + "</div></div>" +
+      stat(lecDone, D.lectures.length, "Lectures read", pct(lecDone, D.lectures.length)) + (allQ ? stat(okQ, allQ, "Questions answered correctly", pct(okQ, allQ)) : "") + stat(wDone, D.written.length, "Written answers mastered", pct(wDone, D.written.length)) + "</div></div>" +
       '<div class="section"><h2>Continue studying</h2><div class="rows">' +
       row("lectures", "Lectures", "Notes, key terms and original slides for all " + D.lectures.length + " lectures.", "Open") +
-      row("practice", "Practice quiz", D.mcq.length + " multiple-choice questions with instant explanations, by topic.", "Open") +
-      row("written", "Written practice", D.written.length + " past-paper questions with model answers.", "Open") +
-      row("generate", "Paper generator", "Build a new practice paper with MCQ and written questions, then check your answers.", "Open") +
+      (D.mcq.length ? row("practice", "Practice quiz", D.mcq.length + " multiple-choice questions with instant explanations, by topic.", "Open") : row("cheat", C.refLabel || "Cheat sheet", "A searchable, printable reference to take into the open-book exam.", "Open")) +
+      row("written", "Written practice", D.written.length + " scenario and past-paper questions with model answers.", "Open") +
+      row("generate", "Paper generator", D.mcq.length ? "Build a new practice paper with MCQ and written questions, then check your answers." : "Build a new written practice paper from scenario questions, then check your answers.", "Open") +
       row("papers", "Past papers", C.papersNote || "View or download the past papers.", "Open") + "</div></div>" +
       '<div class="section"><h2>' + G.title + '</h2><ol class="steps">' + steps.map(function (s) { return "<li><span>" + s + "</span></li>"; }).join("") + '</ol>' + (G.tip ? '<p class="note">' + G.tip + '</p>' : '') + '</div>';
   }
@@ -243,7 +249,7 @@
   function lecturesPage(c, m) {
     c.innerHTML = head("Lectures", "Read the notes, check the key terms, review the slides, then test yourself.", '<span class="tag">' + D.lectures.length + " lectures</span>") +
       '<div class="rows">' + D.lectures.map(function (l) {
-        return '<a class="row" href="#/m/' + m.code + "/lecture/" + l.id + '"><span class="num">' + l.id + '</span><div><div class="t">' + esc(l.title) + '</div><div class="d">' + esc(l.desc) + '</div></div><div class="end">' + (S.lec[lk(l.id)] ? '<span class="tag ok">Read</span>' : "") + "<span>" + l.sections.length + " sections · " + l.terms.length + " terms · " + l.pages + " slides</span></div></a>";
+        return '<a class="row" href="#/m/' + m.code + "/lecture/" + l.id + '"><span class="num">' + l.id + '</span><div><div class="t">' + esc(l.title) + '</div><div class="d">' + esc(l.desc) + '</div></div><div class="end">' + (S.lec[lk(l.id)] ? '<span class="tag ok">Read</span>' : "") + "<span>" + l.sections.length + " sections · " + l.terms.length + " terms" + (l.pdf ? " · " + l.pages + " slides" : "") + "</span></div></a>";
       }).join("") + "</div>";
   }
 
@@ -254,6 +260,9 @@
     var base = "#/m/" + m.code + "/lecture/" + l.id + "/";
     var tabs = [["notes", "Notes"], ["terms", "Key terms"], ["slides", "Slides"], ["quiz", "Quiz"]];
     var qs = D.mcq.filter(function (q) { return q.lec === l.id; });
+    if (!l.pdf) tabs = tabs.filter(function (t) { return t[0] !== "slides"; });
+    if (!D.mcq.length) tabs = tabs.filter(function (t) { return t[0] !== "quiz"; });
+    if (tab === "slides" && !l.pdf) tab = "notes";
     var h = head(esc(l.title), esc(l.desc), '<button class="btn' + (S.lec[lk(l.id)] ? " ghost" : "") + '" id="doneBtn">' + (S.lec[lk(l.id)] ? "Marked as read – undo" : "Mark as read") + "</button>",
       '<a href="#/m/' + m.code + '/lectures">Lectures</a> / Lecture ' + l.id) +
       '<div class="tabs" role="tablist">' + tabs.map(function (t) { return '<a class="tab' + (tab === t[0] ? " active" : "") + '" role="tab" href="' + base + t[0] + '">' + t[1] + "</a>"; }).join("") + "</div>";
@@ -436,30 +445,31 @@
     var topics = {}; D.lectures.forEach(function (l) { topics[l.id] = true; });
     var resume = S.paper && S.paper.code === C.code && !S.paper.submitted;
     var gens = S.gen.filter(function (g) { return g.code === C.code; }), gd = C.genDefaults || {};
+    var hasM = D.mcq.length > 0;
     var opts = function (arr, def) { return arr.map(function (v) { return '<option value="' + v[0] + '"' + (v[0] === def ? " selected" : "") + ">" + v[1] + "</option>"; }).join(""); };
     c.innerHTML = head("Paper generator", "Build a fresh practice paper from the question bank. Answer it, submit it, and the answers appear for you to check.") +
       (resume ? '<p class="note" style="margin:0 0 24px">You have an unfinished paper. <a href="#/m/' + m.code + '/generate/paper">Resume it</a> or generate a new one below.</p>' : "") +
       '<div class="form-grid">' +
-      '<div class="field"><label for="gM">Multiple-choice questions</label><select id="gM">' + opts([[0, "None"], [10, "10 questions"], [15, "15 questions"], [20, "20 questions"], [25, "25 questions (exam length)"], [30, "30 questions"], [40, "40 questions"]], gd.m != null ? gd.m : 25) + "</select></div>" +
+      (hasM ? '<div class="field"><label for="gM">Multiple-choice questions</label><select id="gM">' + opts([[0, "None"], [10, "10 questions"], [15, "15 questions"], [20, "20 questions"], [25, "25 questions (exam length)"], [30, "30 questions"], [40, "40 questions"]], gd.m != null ? gd.m : 25) + "</select></div>" : "") +
       '<div class="field"><label for="gW">Written questions</label><select id="gW">' + opts([[0, "None"], [1, "1 question"], [2, "2 questions"], [3, "3 questions"], [4, "4 questions"], [5, "5 questions"], [6, "6 questions"]], gd.w != null ? gd.w : 3) + "</select></div>" +
       '<div class="field"><span class="lab">Written question type</span><div class="radio-row"><label><input type="radio" name="gT" value="mixed" checked> Mixed</label><label><input type="radio" name="gT" value="short"> Short answer</label><label><input type="radio" name="gT" value="scenario"> Scenario</label></div></div>' +
       '<div class="field"><label for="gTime">Time limit</label><select id="gTime">' + opts([[0, "No limit"], [30, "30 minutes"], [60, "60 minutes"], [90, "90 minutes"], [120, "120 minutes"]], 0) + "</select></div>" +
       "</div>" +
-      '<div class="section" style="margin-top:28px"><div class="field"><span class="lab">Topics for multiple-choice questions</span></div><div class="pillrow" id="gTopics">' +
+      (hasM ? '<div class="section" style="margin-top:28px"><div class="field"><span class="lab">Topics for multiple-choice questions</span></div><div class="pillrow" id="gTopics">' +
       D.lectures.map(function (l) { return '<button type="button" class="pill active" data-l="' + l.id + '">L' + l.id + " " + esc(SHORT[l.id - 1]) + "</button>"; }).join("") +
-      '</div>' + (D.modelMcq.length ? '<div class="radio-row" style="margin-top:12px"><label><input type="checkbox" id="gModel" checked> Include questions from the ' + esc(C.modelLabel || "model paper") + '</label></div>' : "") + '</div>' +
+      '</div>' + (D.modelMcq.length ? '<div class="radio-row" style="margin-top:12px"><label><input type="checkbox" id="gModel" checked> Include questions from the ' + esc(C.modelLabel || "model paper") + '</label></div>' : "") + '</div>' : "") +
       '<div class="actions" style="margin-top:28px"><button class="btn" id="gGo">Generate paper</button><span class="muted" id="gMsg"></span></div>' +
       (gens.length ? '<div class="section"><h2>Recent attempts</h2><div class="rows">' + gens.map(function (g) {
         return '<div class="row two"><div><div class="t">' + esc(g.when) + '</div><div class="d">MCQ ' + g.mcq + " / " + g.mcqN + (g.wTotal ? " · Written (self-marked) " + (g.w == null ? "not marked" : g.w + " / " + g.wTotal) : "") + '</div></div><div class="end">' + g.pct + "%</div></div>";
       }).join("") + "</div></div>" : "");
     $$("#gTopics .pill", c).forEach(function (b) { b.addEventListener("click", function () { var id = b.getAttribute("data-l"); topics[id] = !topics[id]; b.classList.toggle("active", !!topics[id]); }); });
     $("#gGo").addEventListener("click", function () {
-      var nM = +$("#gM").value, nW = +$("#gW").value, type = ($("input[name=gT]:checked") || {}).value || "mixed";
+      var nM = $("#gM") ? +$("#gM").value : 0, nW = +$("#gW").value, type = ($("input[name=gT]:checked") || {}).value || "mixed";
       var pool = D.mcq.filter(function (q) { return topics[q.lec]; });
       if ($("#gModel") && $("#gModel").checked) pool = pool.concat(D.modelMcq);
       var wPool = D.written.filter(function (w) { return type === "mixed" || writtenKind(w) === type; });
       var mcq = shuffle(pool).slice(0, nM), wr = shuffle(wPool).slice(0, nW);
-      if (!mcq.length && !wr.length) { $("#gMsg").textContent = "Choose at least one question, or select more topics."; return; }
+      if (!mcq.length && !wr.length) { $("#gMsg").textContent = "Choose at least one question."; return; }
       var limit = +$("#gTime").value;
       S.paper = { code: C.code, id: Date.now(), created: new Date().toLocaleString(), mcq: mcq, wr: wr, ans: [], text: {}, self: {}, submitted: false, limit: limit, endAt: limit ? Date.now() + limit * 60000 : 0 };
       save(); location.hash = "#/m/" + m.code + "/generate/paper";
@@ -605,8 +615,17 @@
 
   /* ---------------- cheat sheet ---------------- */
   function cheatPage(c) {
-    c.innerHTML = head("Cheat sheet", "The things worth remembering, on one page.", '<button class="btn ghost small no-print" onclick="window.print()">' + ic("print") + " Print</button>") +
-      '<div class="cheats">' + D.cheatsheet.map(function (s) { return '<div class="cheat"><h3>' + s.title + "</h3>" + s.html + "</div>"; }).join("") + "</div>";
+    var lab = C.refLabel || "Cheat sheet";
+    c.innerHTML = head(lab, C.refIntro || "The things worth remembering, on one page.", '<button class="btn ghost small no-print" onclick="window.print()">' + ic("print") + " Print</button>") +
+      '<div class="ref-search no-print"><input type="search" id="refQ" placeholder="Search this sheet (for example MQTT, BSC, CMMI)" aria-label="Search"><span class="muted" id="refN"></span></div>' +
+      '<div class="cheats">' + D.cheatsheet.map(function (s) { return '<div class="cheat"><h3>' + s.title + "</h3>" + s.html + "</div>"; }).join("") + '</div><p class="muted" id="refNone" style="display:none">No matching section.</p>';
+    var q = $("#refQ", c);
+    q.addEventListener("input", function () {
+      var t = q.value.trim().toLowerCase(), n = 0;
+      $$(".cheat", c).forEach(function (b) { var on = !t || b.textContent.toLowerCase().indexOf(t) >= 0; b.style.display = on ? "" : "none"; if (on) n++; });
+      $("#refN", c).textContent = t ? n + " of " + D.cheatsheet.length + " sections" : "";
+      $("#refNone", c).style.display = n ? "none" : "";
+    });
   }
 
   if (window.PSPIntro && window.PSPIntro.shouldRun()) { window.PSPIntro.run(render); } else { render(); }

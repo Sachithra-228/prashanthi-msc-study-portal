@@ -3,7 +3,9 @@
 A calm, focused study space for MSc exam preparation – lecture notes, flashcards, practice quizzes, past papers and timed mock exams, one module at a time.
 
 **Live modules:** IT5090 Research Methodology (10 lectures, 113 MCQs, 36 written questions) and IT5080 DevOps (8 lectures, 86 MCQs, 49 written questions from the 2023–2025 papers).
-**Coming soon:** IT5070 Internet of Things · IE6053 Enterprise Governance of IT · IT5120 Data Analytics · IT5130 Cloud Computing.
+**Open-book modules (no MCQs):** IT5070 Internet of Things (8 lectures, 34 scenario and past-paper questions with model answers) and IE6053 Enterprise Governance of IT (11 lectures, 41 case-study questions from the 2019 and 2023–2025 papers). Each has a searchable, printable exam reference page instead of a quiz. The ISACA COBIT 5 PDF is not published (copyright); bring your own copy.
+**Coming soon:** IT5120 Data Analytics · IT5130 Cloud Computing.
+**Landing page:** books for finished exams start closed (click to open, click again to enter); books for upcoming exams open by themselves.
 
 ## Features
 - Landing page: a shelf of six spellbooks (one per module). Click a book to step inside its own space with a sidebar.
